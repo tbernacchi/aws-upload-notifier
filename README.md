@@ -1,26 +1,16 @@
-# Terraform assignment
+# AWS-engineering-terraform
 
-Welcome to the Terraform assignment. In this assignment we kindly ask you to provision
-some AWS resources by using Terraform. To be independent of any AWS accounts, we've prepared
-a docker-compose configuration that will start the [localstack](https://github.com/localstack) 
-AWS cloud stack on your machine. Terraform is already fully configured to work together with 
-localstack. Please see the usage section on how to authenticate.
+This is a terraform project that provisions the architecture described in the following diagram.
 
-# Assignment
+> The main purpose of this project was to practice a litte bit of terraform/terragrunt on AWS.
 
-![Assignment](assignment.drawio.png)
+# Architecture
 
-The practical use of the assignment shouldn't be questioned :-)
-
-We'd like to track a list of files that have been uploaded. For this we require:
-- A S3 Bucket to where we upload files
-- A DynamoDb table called `Files` with an attribute `FileName`
-- A Stepfunction that writes to the DynamoDb table
-- A Lambda that get's triggered after a file upload and then executes the stepfunction.
+![Architecture](assignment.drawio.png)
 
 # Usage
 
-## Start localstack
+## Start localstack (START HERE)
 
 ```shell
 docker-compose up
