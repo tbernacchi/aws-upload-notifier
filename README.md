@@ -8,6 +8,12 @@ This is a terraform project that provisions the architecture described in the fo
 
 ![Architecture](assignment.drawio.png)
 
+We're going to track a list of files that have been uploaded. For this we're going to need:
+- A S3 Bucket to where we upload files;
+- A DynamoDb table called `Files` with an attribute `FileName`;
+- A Stepfunction that writes to the DynamoDb table;
+- A Lambda that get's triggered after a file upload and then executes the stepfunction.
+
 # Usage
 
 ## Start localstack (START HERE)
