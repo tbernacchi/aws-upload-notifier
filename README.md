@@ -1,10 +1,10 @@
-# AWS-engineering-terraform
+# aws-engineering-terraform
 
 This is a terraform project that provisions the architecture described in the following diagram.
 
 > The main purpose of this project was to practice a litte bit of terraform/terragrunt on AWS.
 
-# Architecture
+## Architecture
 
 ![Architecture](assignment.drawio.png)
 
