@@ -1,5 +1,5 @@
 include "root" {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("terragrunt.hcl") # Find the root terragrunt.hcl file
 }
 
 terraform {
@@ -7,10 +7,7 @@ terraform {
 }
 
 inputs = {
-  account_id = "913830480463"
-  environment = "dev"
-  aws_region = "sa-east-1"
-  user_name  = "ambrosia"  # seu usuário IAM
+  user_name  = "ambrosia"  # Your IAM user name
   role_name_prefix = "dev-lambda"
   policy_name_prefix = "dev-dynamodb"
   table_name = "Files"

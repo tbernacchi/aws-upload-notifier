@@ -1,4 +1,4 @@
-# common configuration
+# Root terragrunt.hcl
 remote_state {
   backend = "local"
   config = {
@@ -6,23 +6,27 @@ remote_state {
   }
 }
 
-# global variables
-inputs = {
-  region      = "sa-east-1"
-}
-
 # Provider
 generate "provider" {
   path      = "provider.tf"
-  if_exists = "skip"
+  if_exists = "overwrite_terragrunt"
   contents  = <<EOF
 provider "aws" {
-  region     = "sa-east-1"
   profile    = "default"
 }
 
+#backend
 terraform {
   backend "local" {}
 }
+
+# Data sources availables for all modules
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 EOF
+}
+
+# global variables
+inputs = {
+  environment = "dev"
 }
