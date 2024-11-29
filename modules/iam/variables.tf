@@ -8,3 +8,10 @@ variable "table_name" {
   description = "DynamoDB table name"
   default     = "Files"
 }
+
+variable "policy_name_prefix" {
+  type        = string
+  description = "Prefix for policy names"
+  default     = "dev"
+}
+

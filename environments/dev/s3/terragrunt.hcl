@@ -10,7 +10,7 @@ terraform {
 
 # variables
 inputs = {
-  bucket_name = "my-bucket-s3"
+  bucket_name = "ambrosia-files-${formatdate("YYYYMMDD", timestamp())}-913830480463"
   environment = "dev"
   project     = "my-project"
  

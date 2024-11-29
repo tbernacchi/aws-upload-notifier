@@ -11,4 +11,5 @@ inputs = {
   role_name_prefix = "dev-lambda"
   policy_name_prefix = "dev-dynamodb"
   table_name = "Files"
+  policy_name_prefix = "dev-dynamodb" 
 }
