@@ -1,30 +1,8 @@
-# Lambda policy to access DynamoDB
-resource "aws_iam_policy" "lambda_dynamodb_policy" {
-  name        = "lambda-dynamodb-policy"
-  description = "IAM policy for Lambda to access DynamoDB"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Query",
-          "dynamodb:Scan"
-        ]
-        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${var.table_name}"
-      }
-    ]
-  })
-}
-
-# Lambda role
+# -----------------------------
+# Lambda Role and Policies
+# -----------------------------
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda-dynamodb-role"
+  name = "lambda-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -40,16 +18,46 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-# Attach the policy to the role
-resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
-  policy_arn = aws_iam_policy.lambda_dynamodb_policy.arn
-  role       = aws_iam_role.lambda_role.name
+resource "aws_iam_policy" "lambda_policy" {
+  name        = "${var.policy_name_prefix}-lambda"
+  description = "Policy for Lambda management"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "lambda:CreateFunction",
+          "lambda:DeleteFunction",
+          "lambda:GetFunction",
+          "lambda:InvokeFunction",
+          "lambda:UpdateFunctionCode",
+          "lambda:UpdateFunctionConfiguration",
+          "lambda:ListVersionsByFunction",
+          "lambda:PublishVersion",
+          "lambda:GetFunctionConfiguration",
+          "lambda:ListTags",
+          "lambda:TagResource",
+          "lambda:UntagResource",
+          "lambda:GetFunctionCodeSigningConfig",
+          "lambda:DeleteFunctionCodeSigningConfig",
+          "lambda:PutFunctionCodeSigningConfig",
+          "lambda:AddPermission",
+          "lambda:GetPolicy"
+        ]
+        Resource = "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:file-processor"
+      }
+    ]
+  })
 }
 
-# DynamoDB
-resource "aws_iam_policy" "dynamodb_admin_policy" {
-  name        = "${var.policy_name_prefix}-dynamodb-admin"
-  description = "Policy for DynamoDB table management"
+# -----------------------------
+# DynamoDB Policies
+# -----------------------------
+resource "aws_iam_policy" "dynamodb_policy" {
+  name        = "${var.policy_name_prefix}-dynamodb"
+  description = "Policy for DynamoDB access"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -60,35 +68,20 @@ resource "aws_iam_policy" "dynamodb_admin_policy" {
           "dynamodb:CreateTable",
           "dynamodb:DeleteTable",
           "dynamodb:DescribeTable",
-          "dynamodb:UpdateTable",
-          "dynamodb:PutItem",
-          "dynamodb:GetItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:Query",
-          "dynamodb:Scan",
-          "dynamodb:TagResource",      
-          "dynamodb:UntagResource",    
-          "dynamodb:ListTagsOfResource",
-          "dynamodb:DescribeContinuousBackups",  
-          "dynamodb:DescribeTimeToLive",         
-          "dynamodb:DescribeGlobalTableSettings", 
-          "dynamodb:DescribeLimits",             
-          "dynamodb:DescribeStream",             
-          "dynamodb:ListStreams"                 
+          "dynamodb:ListTables",
+          "dynamodb:UpdateTable"
         ]
-        Resource = [
-          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/Files",
-          "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/Files/*"
-        ]
+        Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/*"
       }
     ]
   })
 }
 
-# Step Functions policy
-resource "aws_iam_policy" "step_functions_policy" {
-  name        = "${var.policy_name_prefix}-step-functions"
+# -----------------------------
+# Step Functions Policies
+# -----------------------------
+resource "aws_iam_policy" "stepfunctions_policy" {
+  name        = "${var.policy_name_prefix}-stepfunctions"
   description = "Policy for Step Functions management"
 
   policy = jsonencode({
@@ -101,32 +94,29 @@ resource "aws_iam_policy" "step_functions_policy" {
           "states:DeleteStateMachine",
           "states:DescribeStateMachine",
           "states:ListStateMachines",
-          "states:UpdateStateMachine",
-          "states:TagResource",
-          "states:UntagResource",
-          "states:ListTagsForResource",
-          "states:ValidateStateMachineDefinition",
-          "states:ListStateMachineVersions",    
-          "states:StartExecution",              
-          "states:StopExecution",               
-          "states:DescribeExecution",           
-          "states:ListExecutions"               
+          "states:StartExecution"
         ]
-        Resource = "*"
+        Resource = "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
       }
     ]
   })
 }
 
-# Attach the policy to the user
-resource "aws_iam_user_policy_attachment" "user_step_functions" {
+# -----------------------------
+# Policy Attachments
+# -----------------------------
+resource "aws_iam_user_policy_attachment" "lambda_attachment" {
   user       = var.user_name
-  policy_arn = aws_iam_policy.step_functions_policy.arn
+  policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
-# Attach the policy to the user
-resource "aws_iam_user_policy_attachment" "user_dynamodb_admin" {
+resource "aws_iam_user_policy_attachment" "dynamodb_attachment" {
   user       = var.user_name
-  policy_arn = aws_iam_policy.dynamodb_admin_policy.arn
+  policy_arn = aws_iam_policy.dynamodb_policy.arn
+}
+
+resource "aws_iam_user_policy_attachment" "stepfunctions_attachment" {
+  user       = var.user_name
+  policy_arn = aws_iam_policy.stepfunctions_policy.arn
 }
 
