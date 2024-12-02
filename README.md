@@ -1,8 +1,8 @@
-# aws-engineering-terraform
+# aws-upload-notifier
 
-This is a terraform project that provisions the architecture described in the following diagram.
+This project sets up an automated workflow where files uploaded to an S3 bucket trigger a Lambda function that records the file information in DynamoDB.
 
-> The main purpose of this project was to practice a litte bit of terraform/terragrunt on AWS.
+> The main purpose of this project was to practice a litte bit of architecture on AWS using terraform/terragrunt.
 
 ## Architecture
 
@@ -14,22 +14,72 @@ We're going to track a list of files that have been uploaded. For this we're goi
 - A Stepfunction that writes to the DynamoDb table;
 - A Lambda that get's triggered after a file upload and then executes the stepfunction.
 
+### Prerequisites
+- AWS CLI configured
+- Terraform v1.9.8
+- Terragrunt v0.69.1
+
 # Usage
 
-## Start localstack (START HERE)
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd aws-upload-notifier
+   ```
+2. **Deploy modules in sequence**
+   - Start with IAM, then S3, DynamoDB, and finally Lambda.
 
-```shell
-docker-compose up
+## Project Structure
+```
+.
+├── environments
+│   ├── dev
+│   └── terragrunt.hcl
+└── modules
+    ├── dynamodb
+    ├── iam
+    ├── lambda
+    ├── s3
+    └── stepfunction
 ```
 
-Watch the logs for `Execution of "preload_services" took 986.95ms`
+## Example:
+```bash
+cd environments/dev/iam 
+# Initialize Terragrunt
+terragrunt init
 
-## Authentication
-```shell
-export AWS_ACCESS_KEY_ID=foobar
-export AWS_SECRET_ACCESS_KEY=foobar
-export AWS_REGION=eu-central-1
+# Plan changes
+terragrunt plan -out=plan-iam.tfplan
+
+# Apply changes
+terragrunt apply "plan-iam.tfplan"
 ```
+
+After finishing deploying all the modules you can test the solution like this:
+
+```bash
+# Create test file
+echo "Test content $(date)" > test.txt
+
+# Upload to S3
+aws s3 cp test.txt s3://YOUR_BUCKET_NAME/
+
+# Watch Lambda logs
+aws logs tail /aws/lambda/file-processor --follow
+
+# Check DynamoDB records
+aws dynamodb scan --table-name Files
+```
+
+
+
+
+
+
+
+
+
 
 ## AWS CLI examples
 ### S3
