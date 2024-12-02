@@ -1,8 +1,8 @@
 # aws-upload-notifier
 
-This project sets up an automated workflow where files uploaded to an S3 bucket trigger a Lambda function that records the file information in DynamoDB.
+This project sets up an automated workflow for tracking and monitoring file uploads in S3 buckets. 
 
-> The main purpose of this project was to practice a litte bit of architecture on AWS using terraform/terragrunt.
+> The main purpose of this project was to practice a litte bit of serverless architecture on AWS using terraform/terragrunt.
 
 ## Architecture
 
@@ -15,9 +15,9 @@ We're going to track a list of files that have been uploaded. For this we're goi
 - A Lambda that get's triggered after a file upload and then executes the stepfunction.
 
 ### Prerequisites
-- AWS CLI configured
-- Terraform v1.9.8
-- Terragrunt v0.69.1
+- [AWS CLI](https://aws.amazon.com/cli/ )configured
+- [Terraform v1.9.8](https://www.terraform.io/)
+- [Terragrunt v0.69.1](https://terragrunt.gruntwork.io/)
 
 # Usage
 
@@ -72,28 +72,8 @@ aws logs tail /aws/lambda/file-processor --follow
 aws dynamodb scan --table-name Files
 ```
 
+Make sure you have all the necessary permissions to run the commands above. You can check the policies attached to your user like this:
 
-
-
-
-
-
-
-
-
-## AWS CLI examples
-### S3
-```shell
-aws --endpoint-url http://localhost:4566 s3 cp README.md s3://test-bucket/
 ```
-
-## StepFunctions
-```shell
-aws --endpoint-url http://localhost:4566 stepfunctions list-state-machines
-```
-
-## DynamoDb
-
-```shell
-aws --endpoint-url http://localhost:4566 dynamodb scan --table-name Files
+aws iam list-attached-user-policies --user-name YOUR_USERNAME
 ```
