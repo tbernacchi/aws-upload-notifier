@@ -19,7 +19,7 @@ We're going to track a list of files that have been uploaded. For this we're goi
 - [Terraform v1.9.8](https://www.terraform.io/)
 - [Terragrunt v0.69.1](https://terragrunt.gruntwork.io/)
 
-## Project Structure
+### Project Structure
 ```
 .
 ├── environments
