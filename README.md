@@ -14,20 +14,10 @@ We're going to track a list of files that have been uploaded. For this we're goi
 - A Stepfunction that writes to the DynamoDb table;
 - A Lambda that get's triggered after a file upload and then executes the stepfunction.
 
-### Prerequisites
-- [AWS CLI](https://aws.amazon.com/cli/ )configured
+### Pre-requirements
+- [AWS CLI](https://aws.amazon.com/cli/)
 - [Terraform v1.9.8](https://www.terraform.io/)
 - [Terragrunt v0.69.1](https://terragrunt.gruntwork.io/)
-
-# Usage
-
-1. **Clone the Repository**
-   ```bash
-   git clone <repository-url>
-   cd aws-upload-notifier
-   ```
-2. **Deploy modules in sequence**
-   - Start with IAM, then S3, DynamoDB, and finally Lambda.
 
 ## Project Structure
 ```
@@ -42,6 +32,17 @@ We're going to track a list of files that have been uploaded. For this we're goi
     ├── s3
     └── stepfunction
 ```
+
+# Usage
+
+1. **Clone the Repository**
+   ```bash
+   git clone <repository-url>
+   cd aws-upload-notifier
+   ```
+2. **Deploy modules in sequence**
+   - Start with IAM, then S3, DynamoDB, and finally Lambda.
+
 
 ## Example:
 ```bash
