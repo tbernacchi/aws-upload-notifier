@@ -33,7 +33,7 @@ We're going to track a list of files that have been uploaded. For this we're goi
     └── stepfunction
 ```
 
-### Usage
+## Usage
 
 1. **Clone the Repository**
    ```bash
