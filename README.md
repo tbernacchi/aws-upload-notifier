@@ -33,7 +33,7 @@ We're going to track a list of files that have been uploaded. For this we're goi
     └── stepfunction
 ```
 
-# Usage
+### Usage
 
 1. **Clone the Repository**
    ```bash
@@ -41,8 +41,10 @@ We're going to track a list of files that have been uploaded. For this we're goi
    cd aws-upload-notifier
    ```
 2. **Deploy modules in sequence**
-   - Start with IAM, then S3, DynamoDB, and finally Lambda.
-
+   - IAM;
+   - S3;
+   - DynamoDB;
+   - Lambda.   
 
 ## Example:
 ```bash
