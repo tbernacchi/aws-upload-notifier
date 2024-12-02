@@ -28,3 +28,12 @@ resource "aws_lambda_permission" "allow_s3" {
   principal     = "s3.amazonaws.com"
   source_arn    = var.s3_bucket_arn
 }
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  depends_on = [aws_lambda_permission.allow_s3]
+  bucket = var.s3_bucket_id
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.file_processor.arn
+    events = ["s3:ObjectCreated:*"]
+  }
+} 

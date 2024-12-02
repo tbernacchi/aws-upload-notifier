@@ -1,23 +1,28 @@
 output "bucket_name" {
-  value = aws_s3_bucket.bucket_name.bucket
+  value = aws_s3_bucket.files_bucket.bucket
 }
 
 output "bucket_arn" {
-  value       = aws_s3_bucket.bucket_name.arn
+  description = "The ARN of the S3 bucket"
+  value       = aws_s3_bucket.files_bucket.arn
 }
 
 output "bucket_region" {
-  value       = aws_s3_bucket.bucket_name.region
+  description = "The region of the S3 bucket"
+  value       = aws_s3_bucket.files_bucket.region
 }
 
 output "bucket_tags" {
-  value       = aws_s3_bucket.bucket_name.tags
+  description = "The tags of the S3 bucket"
+  value       = aws_s3_bucket.files_bucket.tags
 }
 
 output "bucket_domain_name" {
-  value       = aws_s3_bucket.bucket_name.bucket_domain_name
+  description = "The domain name of the S3 bucket"
+  value       = aws_s3_bucket.files_bucket.bucket_domain_name
 }
 
 output "bucket_id" {
-  value = aws_s3_bucket.bucket_name.id
+  description = "The ID of the S3 bucket"
+  value       = aws_s3_bucket.files_bucket.id
 }

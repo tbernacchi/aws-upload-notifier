@@ -15,3 +15,7 @@ variable "policy_name_prefix" {
   default     = "dev"
 }
 
+variable "bucket_name" {
+  type        = string
+  description = "S3 bucket name"
+}

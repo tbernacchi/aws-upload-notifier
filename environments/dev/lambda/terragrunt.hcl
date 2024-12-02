@@ -38,4 +38,5 @@ inputs = {
   
   lambda_role_arn = dependency.iam.outputs.lambda_role_arn
   s3_bucket_arn = dependency.s3.outputs.bucket_arn
-} 
+  s3_bucket_id = dependency.s3.outputs.bucket_id
+}

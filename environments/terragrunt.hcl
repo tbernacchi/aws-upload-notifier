@@ -1,4 +1,13 @@
 # Root terragrunt.hcl
+
+# Locals block para variáveis compartilhadas
+locals {
+  account_id = get_aws_account_id()
+  project_name = "ambrosia"
+  environment = "dev"
+  bucket_name = "${local.project_name}-files-${local.environment}-${local.account_id}"
+}
+
 remote_state {
   backend = "local"
   config = {
@@ -29,4 +38,5 @@ EOF
 # global variables
 inputs = {
   environment = "dev"
+  bucket_name = local.bucket_name
 }

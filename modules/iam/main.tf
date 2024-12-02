@@ -44,13 +44,34 @@ resource "aws_iam_policy" "lambda_policy" {
           "lambda:DeleteFunctionCodeSigningConfig",
           "lambda:PutFunctionCodeSigningConfig",
           "lambda:AddPermission",
-          "lambda:GetPolicy"
+          "lambda:GetPolicy",
+          "lambda:RemovePermission"
         ]
         Resource = "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:file-processor"
       }
     ]
   })
 }
+
+resource "aws_iam_policy" "s3_policy" {
+  name        = "${var.policy_name_prefix}-s3"
+  description = "Policy for S3 notifications"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetBucketNotification",
+          "s3:PutBucketNotification"
+        ]
+        Resource = "arn:aws:s3:::${var.bucket_name}"
+      }
+    ]
+  })
+}
+
 
 # -----------------------------
 # DynamoDB Policies
@@ -120,3 +141,12 @@ resource "aws_iam_user_policy_attachment" "stepfunctions_attachment" {
   policy_arn = aws_iam_policy.stepfunctions_policy.arn
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_role_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_user_policy_attachment" "s3_attachment" {
+  user       = var.user_name
+  policy_arn = aws_iam_policy.s3_policy.arn
+}

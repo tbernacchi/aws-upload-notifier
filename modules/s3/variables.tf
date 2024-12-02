@@ -25,7 +25,6 @@ variable "tags" {
 variable "bucket_name" {
   description = "The name of the S3 bucket"
   type        = string
-  default     = ""
 }
 
 variable "bucket_key_enabled" {
@@ -34,13 +33,12 @@ variable "bucket_key_enabled" {
   description = "Enable S3 bucket key (used to reduce KMS costs)"
 }
 
-variable "bucket_names" {
-  type    = any
-  default = {}
-}
-
 variable "versioning" {
-  description = "Map containing versioning configuration."
   type        = map(string)
-  default     = {}
+  description = "Map containing versioning configuration."
+  default     = {
+    status = "Enabled"
+    mfa_delete = "Disabled"
+    enabled = true
+  }
 }

@@ -1,10 +1,10 @@
-resource "aws_s3_bucket" "bucket_name" {
+resource "aws_s3_bucket" "files_bucket" {
   bucket = var.bucket_name
   tags = var.tags
 }
 
 resource "aws_s3_bucket_versioning" "this" {
-  bucket = aws_s3_bucket.bucket_name.id
+  bucket = aws_s3_bucket.files_bucket.id
   # expected_bucket_owner = var.expected_bucket_owner
   mfa = try(var.versioning["mfa"], null)
 
@@ -27,7 +27,7 @@ resource "aws_s3_bucket_versioning" "this" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucket_key_enabled" {
   count = var.bucket_key_enabled ? 1 : 0
-  bucket = aws_s3_bucket.bucket_name.id
+  bucket = aws_s3_bucket.files_bucket.id
   rule {
     bucket_key_enabled = var.bucket_key_enabled
     apply_server_side_encryption_by_default {
