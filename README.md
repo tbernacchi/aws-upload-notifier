@@ -40,11 +40,11 @@ We're going to track a list of files that have been uploaded. For this we're goi
    git clone <repository-url>
    cd aws-upload-notifier
    ```
-2. **Deploy modules in sequence**
-   - IAM;
-   - S3;
-   - DynamoDB;
-   - Lambda.   
+2. **Deploy modules in sequence:**
+* IAM;
+* S3;
+* DynamoDB;
+* Lambda.   
 
 ## Example:
 ```bash
@@ -75,7 +75,7 @@ aws logs tail /aws/lambda/file-processor --follow
 aws dynamodb scan --table-name Files
 ```
 
-Make sure you have all the necessary permissions to run the commands above. You can check the policies attached to your user like this:
+Make sure you have all the necessary permissions to run the commands above:
 
 ```
 aws iam list-attached-user-policies --user-name YOUR_USERNAME
