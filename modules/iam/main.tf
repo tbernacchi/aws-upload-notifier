@@ -53,6 +53,51 @@ resource "aws_iam_policy" "lambda_policy" {
   })
 }
 
+resource "aws_iam_role_policy" "lambda_cloudwatch" {
+  name = "lambda-cloudwatch"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = [
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*",
+          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/lambda/*:*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_kms" {
+  name = "lambda-kms"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey"
+        ]
+        Resource = "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/*"
+      }
+    ]
+  })
+}
+
+# -----------------------------
+# S3 Policies
+# -----------------------------
 resource "aws_iam_policy" "s3_policy" {
   name        = "${var.policy_name_prefix}-s3"
   description = "Policy for S3 notifications"
@@ -90,7 +135,13 @@ resource "aws_iam_policy" "dynamodb_policy" {
           "dynamodb:DeleteTable",
           "dynamodb:DescribeTable",
           "dynamodb:ListTables",
-          "dynamodb:UpdateTable"
+          "dynamodb:UpdateTable",
+          "dynamodb:PutItem",
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Scan",
+          "dynamodb:Query"
         ]
         Resource = "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/*"
       }
@@ -150,3 +201,9 @@ resource "aws_iam_user_policy_attachment" "s3_attachment" {
   user       = var.user_name
   policy_arn = aws_iam_policy.s3_policy.arn
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_dynamodb_attachment" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.dynamodb_policy.arn
+}
+
